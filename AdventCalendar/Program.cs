@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using AdventCalendar.Day01;
+using AdventCalendar.Day02;
 
 [assembly: InternalsVisibleTo("AdventCalendar.Tests")]
 
@@ -13,7 +14,9 @@ namespace AdventCalendar
             //new Task01().Solve("Day01\\input1-1.txt");
             //Console.WriteLine(new Task02().Solve("Day01\\input1-1.txt"));
 
-            var task = new Day02.Day02Task01(new Day02.SymbolAnalyzer());
+            ITask task;
+            //task = new Day02.Day02Task01(new Day02.SymbolAnalyzer());
+            task = new Day02.Day02Task02();
 
             var result = task.Solve();
 

@@ -24,5 +24,26 @@ namespace AdventCalendar.Tests
 
             Assert.Equal((twoCount, threeCount), counts);
         }
+
+        [Fact]
+        public void MatchFinder_ReturnsCorrectMath()
+        {
+            var finder = new MatchFinder();
+            var lines = new List<string>
+            {
+                "abcde",
+                "fghij",
+                "klmno",
+                "pqrst",
+                "fguij",
+                "axcye",
+                "wvxyz"
+            };
+
+            var matchingSymbols = finder.Find(lines);
+
+            Assert.Equal("fgij", matchingSymbols);
+        }
+
     }
 }

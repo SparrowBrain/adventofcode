@@ -4,7 +4,7 @@ using AdventCalendar.Day02;
 
 namespace AdventCalendar.Day01
 {
-    class Task02 : Task
+    class Task02 : Puzzle
     {
         protected override string Path => "Day01\\input1-1.txt";
 

@@ -2,7 +2,7 @@
 
 namespace AdventCalendar.Day02
 {
-    internal class Day02Task01 : Task
+    internal class Day02Task01 : Puzzle
     {
         private readonly SymbolAnalyzer _analyzer;
 
