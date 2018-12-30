@@ -21,7 +21,7 @@ namespace AdventCalendar
             //puzzle = new Day02.Day02Task02();
             //puzzle = new Day03Task01();
             //puzzle = new Day03Task02();
-            puzzle = new Day04Task01(new FileReader());
+            puzzle = new Day04Puzzle01(new FileReader());
 
             var result = puzzle.Solve();
 

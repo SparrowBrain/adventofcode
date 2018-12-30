@@ -137,7 +137,7 @@ namespace AdventCalendar.Tests
                 "[1518-11-05 00:55] wakes up",
             });
 
-            var puzzle = new Day04Task01(inputReaderMock.Object);
+            var puzzle = new Day04Puzzle01(inputReaderMock.Object);
 
             var result = puzzle.Solve();
 
@@ -168,7 +168,7 @@ namespace AdventCalendar.Tests
                 "[1518-11-05 00:55] wakes up",
             });
 
-            var puzzle = new Day04Task02(inputReaderMock.Object);
+            var puzzle = new Day04Puzzle02(inputReaderMock.Object);
 
             var result = puzzle.Solve();
 
