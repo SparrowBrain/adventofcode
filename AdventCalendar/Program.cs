@@ -16,14 +16,14 @@ namespace AdventCalendar
             //new Task01().Solve("Day01\\input1-1.txt");
             //Console.WriteLine(new Task02().Solve("Day01\\input1-1.txt"));
 
-            ITask task;
-            //task = new Day02.Day02Task01(new Day02.SymbolAnalyzer());
-            //task = new Day02.Day02Task02();
-            //task = new Day03Task01();
-            //task = new Day03Task02();
-            task = new Day04Task01();
+            IPuzzle puzzle;
+            //puzzle = new Day02.Day02Task01(new Day02.SymbolAnalyzer());
+            //puzzle = new Day02.Day02Task02();
+            //puzzle = new Day03Task01();
+            //puzzle = new Day03Task02();
+            puzzle = new Day04Task01(new FileReader());
 
-            var result = task.Solve();
+            var result = puzzle.Solve();
 
             Console.WriteLine(result);
             Console.ReadKey();

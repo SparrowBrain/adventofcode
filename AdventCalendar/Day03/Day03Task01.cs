@@ -16,6 +16,10 @@ namespace AdventCalendar.Day03
             var fabricChecker = new FabricChecker();
             return fabricChecker.GetOverlapNumber(claims).ToString();
         }
+
+        public Day03Task01(IInputReader inputReader) : base(inputReader)
+        {
+        }
     }
 
     internal class FabricChecker

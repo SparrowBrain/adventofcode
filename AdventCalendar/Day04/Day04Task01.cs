@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using AdventCalendar.Day02;
 
 namespace AdventCalendar.Day04
 {
@@ -20,6 +19,10 @@ namespace AdventCalendar.Day04
             var minute = solver.MostAsleepGuardMinute(enrichedEntries, guardId);
 
             return (guardId * minute).ToString();
+        }
+
+        public Day04Task01(IInputReader inputReader) : base(inputReader)
+        {
         }
     }
 
@@ -99,6 +102,44 @@ namespace AdventCalendar.Day04
             }
 
             return guardMinutes.OrderByDescending(x => x.Value).First().Key;
+        }
+
+        internal (int, int) MostAsleepGuardOnSameMinute(IEnumerable<EnrichedLogEntry> entries)
+        {
+            var guardLogs = new Dictionary<int, IDictionary<int, int>>();
+
+            var enrichedLogEntries = entries as EnrichedLogEntry[] ?? entries.ToArray();
+            for (var i = 0; i < enrichedLogEntries.Count(); i++)
+            {
+                var entry = enrichedLogEntries[i];
+                if (entry.Type == EntryType.Asleep)
+                {
+                    for (var m = entry.Time.Minute; m < enrichedLogEntries[i + 1].Time.Minute; m++)
+                    {
+                        if (!guardLogs.ContainsKey(entry.GuardId))
+                        {
+                            guardLogs[entry.GuardId] = new Dictionary<int, int>();
+                        }
+
+                        var guardLog = guardLogs[entry.GuardId];
+                        if (!guardLog.ContainsKey(m))
+                        {
+                            guardLog[m] = 1;
+                        }
+                        else
+                        {
+                            guardLog[m]++;
+                        }
+                    }
+                }
+            }
+
+            var mostFrequentSleep = guardLogs.OrderByDescending(x => x.Value.Values.OrderByDescending(m => m).First()).First();
+
+            var guardId = mostFrequentSleep.Key;
+            var minute = mostFrequentSleep.Value.Values.OrderByDescending(m => m).First();
+
+            return (guardId, minute);
         }
     }
 

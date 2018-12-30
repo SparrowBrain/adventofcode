@@ -12,5 +12,9 @@ namespace AdventCalendar.Day03
             var fabricChecker = new FabricChecker();
             return fabricChecker.GetNonOverlappingId(claims).ToString();
         }
+
+        public Day03Task02(IInputReader inputReader) : base(inputReader)
+        {
+        }
     }
 }

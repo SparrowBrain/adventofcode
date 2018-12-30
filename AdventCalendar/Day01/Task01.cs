@@ -19,6 +19,10 @@ namespace AdventCalendar.Day01
 
             return frequency.ToString();
         }
+
+        public Task01(IInputReader inputReader) : base(inputReader)
+        {
+        }
     }
 
     class FrequencyParser

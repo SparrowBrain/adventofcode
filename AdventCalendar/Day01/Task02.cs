@@ -29,5 +29,9 @@ namespace AdventCalendar.Day01
                 }
             }
         }
+
+        public Task02(IInputReader inputReader) : base(inputReader)
+        {
+        }
     }
 }

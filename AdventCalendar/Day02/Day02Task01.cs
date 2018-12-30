@@ -6,7 +6,7 @@ namespace AdventCalendar.Day02
     {
         private readonly SymbolAnalyzer _analyzer;
 
-        public Day02Task01(SymbolAnalyzer analyzer)
+        public Day02Task01(IInputReader inputReader, SymbolAnalyzer analyzer) : base(inputReader)
         {
             _analyzer = analyzer;
         }

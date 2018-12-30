@@ -11,6 +11,10 @@ namespace AdventCalendar.Day02
         {
             return new MatchFinder().Find(Lines);
         }
+
+        public Day02Task02(IInputReader inputReader) : base(inputReader)
+        {
+        }
     }
 
     internal class Code
