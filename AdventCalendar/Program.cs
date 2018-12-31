@@ -1,27 +1,26 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-using AdventCalendar.Day01;
-using AdventCalendar.Day02;
-using AdventCalendar.Day03;
+﻿using AdventCalendar.Day01;
 using AdventCalendar.Day04;
+using System;
+using System.Runtime.CompilerServices;
+using AdventCalendar.Day03;
 
 [assembly: InternalsVisibleTo("AdventCalendar.Tests")]
 
 namespace AdventCalendar
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             //new Task01().Solve("Day01\\input1-1.txt");
             //Console.WriteLine(new Task02().Solve("Day01\\input1-1.txt"));
 
             IPuzzle puzzle;
-            //puzzle = new Day02.Day02Task01(new Day02.SymbolAnalyzer());
-            //puzzle = new Day02.Day02Task02();
-            //puzzle = new Day03Task01();
-            //puzzle = new Day03Task02();
-            puzzle = new Day04Puzzle01(new FileReader());
+            //puzzle = new Day02.Day02Task01(new FileReader("Day02\\input.txt"), new Day02.SymbolAnalyzer());
+            //puzzle = new Day02.Day02Task02(new FileReader("Day02\\input.txt"));
+            //puzzle = new Day03Task01(new FileReader("Day03\\input.txt"));
+            //puzzle = new Day03Task02(new FileReader("Day03\\input.txt"));
+            puzzle = new Day04Puzzle02(new FileReader("Day04\\input.txt"));
 
             var result = puzzle.Solve();
 

@@ -5,8 +5,6 @@ namespace AdventCalendar.Day02
 {
     internal class Day02Task02 : Puzzle
     {
-        protected override string Path => "Day02\\input.txt";
-
         public override string Solve()
         {
             return new MatchFinder().Find(Lines);

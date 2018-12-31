@@ -5,9 +5,16 @@ namespace AdventCalendar
 {
     internal class FileReader : IInputReader
     {
-        public IEnumerable<string> ReadLines(string path)
+        private readonly string _path;
+
+        public FileReader(string path)
         {
-            return File.ReadAllLines(path);
+            _path = path;
+        }
+
+        public IEnumerable<string> ReadLines()
+        {
+            return File.ReadAllLines(_path);
         }
     }
 }

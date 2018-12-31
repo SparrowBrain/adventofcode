@@ -1,14 +1,7 @@
-﻿using System;
-using System.IO;
-using System.Text;
-using AdventCalendar.Day02;
-
-namespace AdventCalendar.Day01
+﻿namespace AdventCalendar.Day01
 {
-    class Task01 : Puzzle
+    internal class Task01 : Puzzle
     {
-        protected override string Path => "Day01\\input1-1.txt";
-
         public override string Solve()
         {
             var frequency = 0;
@@ -25,7 +18,7 @@ namespace AdventCalendar.Day01
         }
     }
 
-    class FrequencyParser
+    internal class FrequencyParser
     {
         public static int ParseChange(string line)
         {

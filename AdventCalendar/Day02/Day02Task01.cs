@@ -11,8 +11,6 @@ namespace AdventCalendar.Day02
             _analyzer = analyzer;
         }
 
-        protected override string Path => "Day02\\input.txt";
-
         public override string Solve()
         {
             var twoTimes = 0;

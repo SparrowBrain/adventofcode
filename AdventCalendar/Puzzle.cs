@@ -5,15 +5,13 @@ namespace AdventCalendar
 {
     internal abstract class Puzzle : IPuzzle
     {
-        private readonly IInputReader _inputReader;
+        protected readonly IInputReader _inputReader;
         protected IEnumerable<string> Lines { get; }
-        
-        protected abstract string Path { get;}
 
         public Puzzle(IInputReader inputReader)
         {
             _inputReader = inputReader;
-            Lines = inputReader.ReadLines(Path);
+            Lines = inputReader.ReadLines();
         }
 
         public abstract string Solve();

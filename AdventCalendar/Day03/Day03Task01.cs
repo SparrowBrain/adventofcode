@@ -2,14 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using AdventCalendar.Day02;
 
 namespace AdventCalendar.Day03
 {
     internal class Day03Task01 : Puzzle
     {
-        protected override string Path => "Day03\\input.txt";
-
         public override string Solve()
         {
             var claims = new Parser().Parse(Lines);
@@ -137,7 +134,7 @@ namespace AdventCalendar.Day03
         {
             return X == other.X && Y == other.Y;
         }
-        
+
         public override int GetHashCode()
         {
             unchecked

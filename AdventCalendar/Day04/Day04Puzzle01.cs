@@ -7,16 +7,14 @@ namespace AdventCalendar.Day04
 {
     internal class Day04Puzzle01 : Puzzle
     {
-        protected override string Path => "Day04\\input.txt";
-
         public override string Solve()
         {
             var logEntries = new Parser().Parse(Lines);
             var enrichedEntries = EnrichedLogEntry.Factory(logEntries);
-            var solver = new ScheduleScrubber();
+            var solver = new ScheduleScrubber(new GuardMinuteFactory(_inputReader));
 
-            var guardId = solver.MostAsleepGuard(enrichedEntries);
-            var minute = solver.MostAsleepGuardMinute(enrichedEntries, guardId);
+            var guardId = solver.MostAsleepGuard();
+            var minute = solver.MostAsleepGuardMinute(guardId);
 
             return (guardId * minute).ToString();
         }
@@ -50,94 +48,38 @@ namespace AdventCalendar.Day04
 
     internal class ScheduleScrubber
     {
-        public int MostAsleepGuard(IEnumerable<EnrichedLogEntry> entries)
+        private readonly GuardMinuteFactory _guardMinuteFactory;
+
+        public ScheduleScrubber(GuardMinuteFactory guardMinuteFactory)
         {
-            var guardMinutes = new Dictionary<int, int>();
-            var asleepTime = DateTime.MinValue;
-
-            foreach (var entry in entries)
-            {
-                if (!guardMinutes.ContainsKey(entry.GuardId))
-                {
-                    guardMinutes[entry.GuardId] = 0;
-                }
-
-                switch (entry.Type)
-                {
-                    case EntryType.Asleep:
-                        asleepTime = entry.Time;
-                        break;
-
-                    case EntryType.Awake:
-                        guardMinutes[entry.GuardId] += (int)(entry.Time - asleepTime).TotalMinutes;
-                        break;
-                }
-            }
-
-            return guardMinutes.OrderByDescending(x => x.Value).First().Key;
+            _guardMinuteFactory = guardMinuteFactory;
         }
 
-        public int MostAsleepGuardMinute(IEnumerable<EnrichedLogEntry> entries, int guardId)
+        public int MostAsleepGuard()
         {
-            var guardMinutes = new Dictionary<int, int>();
+            var guardMinutes = _guardMinuteFactory.GenerateGuardMinutes();
 
-            var enrichedLogEntries = entries as EnrichedLogEntry[] ?? entries.ToArray();
-            for (var i = 0; i < enrichedLogEntries.Count(); i++)
-            {
-                var entry = enrichedLogEntries[i];
-                if (entry.Type == EntryType.Asleep && entry.GuardId == guardId)
-                {
-                    for (var m = entry.Time.Minute; m < enrichedLogEntries[i + 1].Time.Minute; m++)
-                    {
-                        if (!guardMinutes.ContainsKey(m))
-                        {
-                            guardMinutes[m] = 1;
-                        }
-                        else
-                        {
-                            guardMinutes[m]++;
-                        }
-                    }
-                }
-            }
-
-            return guardMinutes.OrderByDescending(x => x.Value).First().Key;
+            return guardMinutes.GroupBy(x => x.GuardId).OrderByDescending(x => x.Count()).First().Key;
         }
 
-        internal (int, int) MostAsleepGuardOnSameMinute(IEnumerable<EnrichedLogEntry> entries)
+        public int MostAsleepGuardMinute(int guardId)
         {
-            var guardLogs = new Dictionary<int, IDictionary<int, int>>();
+            var guardMinutes = _guardMinuteFactory.GenerateGuardMinutes();
+            guardMinutes = guardMinutes.Where(x => x.GuardId == guardId);
 
-            var enrichedLogEntries = entries as EnrichedLogEntry[] ?? entries.ToArray();
-            for (var i = 0; i < enrichedLogEntries.Count(); i++)
-            {
-                var entry = enrichedLogEntries[i];
-                if (entry.Type == EntryType.Asleep)
-                {
-                    for (var m = entry.Time.Minute; m < enrichedLogEntries[i + 1].Time.Minute; m++)
-                    {
-                        if (!guardLogs.ContainsKey(entry.GuardId))
-                        {
-                            guardLogs[entry.GuardId] = new Dictionary<int, int>();
-                        }
+            return guardMinutes.GroupBy(x => x.Minute).OrderByDescending(x => x.Count()).First().Key;
+        }
 
-                        var guardLog = guardLogs[entry.GuardId];
-                        if (!guardLog.ContainsKey(m))
-                        {
-                            guardLog[m] = 1;
-                        }
-                        else
-                        {
-                            guardLog[m]++;
-                        }
-                    }
-                }
-            }
+        public (int, int) MostAsleepGuardOnSameMinute()
+        {
+            var minutes = _guardMinuteFactory.GenerateGuardMinutes();
 
-            var mostFrequentSleep = guardLogs.OrderByDescending(x => x.Value.Values.OrderByDescending(m => m).First()).First();
+            var minuteGroups = (minutes.GroupBy(x => x));
+            minuteGroups = minuteGroups.OrderByDescending(x => x.Count());
 
-            var guardId = mostFrequentSleep.Key;
-            var minute = mostFrequentSleep.Value.First(x => x.Value == mostFrequentSleep.Value.Values.OrderByDescending(m => m).First()).Key;
+            var mostFrequentGuardMinute = minuteGroups.First();
+            var guardId = mostFrequentGuardMinute.Key.GuardId;
+            var minute = mostFrequentGuardMinute.Key.Minute;
 
             return (guardId, minute);
         }

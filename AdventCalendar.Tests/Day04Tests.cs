@@ -25,89 +25,95 @@ namespace AdventCalendar.Tests
             Assert.Equal(@event, entries.First().Event);
         }
 
-        [Fact]
-        public void TaskSolves_GuardWithMostAsleepMinutesTimesId()
+        [Theory, AutoData]
+        public void TaskSolves_GuardWithMostAsleepMinutesTimesId(Mock<IInputReader> inputReaderMock)
         {
-            var scrubber = new ScheduleScrubber();
-            var entries = new List<EnrichedLogEntry>()
+            inputReaderMock.Setup(x => x.ReadLines()).Returns(new List<string>
             {
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-01 00:05"), "falls asleep"), 10),
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-01 00:25"), "wakes up"), 10),
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-01 00:30"), "falls asleep"), 10),
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-01 00:55"), "wakes up"), 10),
+                "[1518-11-01 00:00] Guard #10 begins shift",
+                "[1518-11-01 00:05] falls asleep",
+                "[1518-11-01 00:25] wakes up",
+                "[1518-11-01 00:30] falls asleep",
+                "[1518-11-01 00:55] wakes up",
+                "[1518-11-01 23:58] Guard #99 begins shift",
+                "[1518-11-02 00:40] falls asleep",
+                "[1518-11-02 00:50] wakes up",
+                "[1518-11-03 00:05] Guard #10 begins shift",
+                "[1518-11-03 00:24] falls asleep",
+                "[1518-11-03 00:29] wakes up",
+                "[1518-11-04 00:02] Guard #99 begins shift",
+                "[1518-11-04 00:36] falls asleep",
+                "[1518-11-04 00:46] wakes up",
+                "[1518-11-05 00:03] Guard #99 begins shift",
+                "[1518-11-05 00:45] falls asleep",
+                "[1518-11-05 00:55] wakes up",
+            });
 
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-02 00:40"), "falls asleep"), 99),
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-02 00:50"), "wakes up"), 99),
+            var scrubber = new ScheduleScrubber(new GuardMinuteFactory(inputReaderMock.Object));
 
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-03 00:24"), "falls asleep"), 10),
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-03 00:29"), "wakes up"), 10),
-
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-04 00:36"), "falls asleep"), 99),
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-04 00:46"), "wakes up"), 99),
-
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-05 00:45"), "falls asleep"), 99),
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-05 00:55"), "wakes up"), 99),
-            };
-
-            var guardId = scrubber.MostAsleepGuard(entries);
+            var guardId = scrubber.MostAsleepGuard();
 
             Assert.Equal(10, guardId);
         }
 
-        [Fact]
-        public void TaskSolves_GuardMostAsleepMinutes()
+        [Theory, AutoData]
+        public void TaskSolves_GuardMostAsleepMinutes(Mock<IInputReader> inputReaderMock)
         {
-            var scrubber = new ScheduleScrubber();
-            var entries = new List<EnrichedLogEntry>()
+            inputReaderMock.Setup(x => x.ReadLines()).Returns(new List<string>
             {
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-01 00:05"), "falls asleep"), 10),
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-01 00:25"), "wakes up"), 10),
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-01 00:30"), "falls asleep"), 10),
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-01 00:55"), "wakes up"), 10),
+                "[1518-11-01 00:00] Guard #10 begins shift",
+                "[1518-11-01 00:05] falls asleep",
+                "[1518-11-01 00:25] wakes up",
+                "[1518-11-01 00:30] falls asleep",
+                "[1518-11-01 00:55] wakes up",
+                "[1518-11-01 23:58] Guard #99 begins shift",
+                "[1518-11-02 00:40] falls asleep",
+                "[1518-11-02 00:50] wakes up",
+                "[1518-11-03 00:05] Guard #10 begins shift",
+                "[1518-11-03 00:24] falls asleep",
+                "[1518-11-03 00:29] wakes up",
+                "[1518-11-04 00:02] Guard #99 begins shift",
+                "[1518-11-04 00:36] falls asleep",
+                "[1518-11-04 00:46] wakes up",
+                "[1518-11-05 00:03] Guard #99 begins shift",
+                "[1518-11-05 00:45] falls asleep",
+                "[1518-11-05 00:55] wakes up",
+            });
 
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-02 00:40"), "falls asleep"), 99),
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-02 00:50"), "wakes up"), 99),
-
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-03 00:24"), "falls asleep"), 10),
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-03 00:29"), "wakes up"), 10),
-
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-04 00:36"), "falls asleep"), 99),
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-04 00:46"), "wakes up"), 99),
-
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-05 00:45"), "falls asleep"), 99),
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-05 00:55"), "wakes up"), 99),
-            };
-
-            var minute = scrubber.MostAsleepGuardMinute(entries, 10);
+            var scrubber = new ScheduleScrubber(new GuardMinuteFactory(inputReaderMock.Object));
+           
+            var minute = scrubber.MostAsleepGuardMinute(10);
 
             Assert.Equal(24, minute);
         }
 
-        [Fact]
-        public void MostAsleepGuardOnSameMinute()
+        [Theory, AutoData]
+        public void MostAsleepGuardOnSameMinute(Mock<IInputReader> inputReaderMock)
         {
-            var scrubber = new ScheduleScrubber();
-            var entries = new List<EnrichedLogEntry>()
+            inputReaderMock.Setup(x => x.ReadLines()).Returns(new List<string>
             {
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-01 00:05"), "falls asleep"), 10),
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-01 00:25"), "wakes up"), 10),
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-01 00:30"), "falls asleep"), 10),
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-01 00:55"), "wakes up"), 10),
+                "[1518-11-01 00:00] Guard #10 begins shift",
+                "[1518-11-01 00:05] falls asleep",
+                "[1518-11-01 00:25] wakes up",
+                "[1518-11-01 00:30] falls asleep",
+                "[1518-11-01 00:55] wakes up",
+                "[1518-11-01 23:58] Guard #99 begins shift",
+                "[1518-11-02 00:40] falls asleep",
+                "[1518-11-02 00:50] wakes up",
+                "[1518-11-03 00:05] Guard #10 begins shift",
+                "[1518-11-03 00:24] falls asleep",
+                "[1518-11-03 00:29] wakes up",
+                "[1518-11-04 00:02] Guard #99 begins shift",
+                "[1518-11-04 00:36] falls asleep",
+                "[1518-11-04 00:46] wakes up",
+                "[1518-11-05 00:03] Guard #99 begins shift",
+                "[1518-11-05 00:45] falls asleep",
+                "[1518-11-05 00:55] wakes up",
+            });
 
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-02 00:40"), "falls asleep"), 99),
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-02 00:50"), "wakes up"), 99),
+            var scrubber = new ScheduleScrubber(new GuardMinuteFactory(inputReaderMock.Object));
 
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-03 00:24"), "falls asleep"), 10),
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-03 00:29"), "wakes up"), 10),
-
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-04 00:36"), "falls asleep"), 99),
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-04 00:46"), "wakes up"), 99),
-
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-05 00:45"), "falls asleep"), 99),
-                new EnrichedLogEntry(new LogEntry(DateTime.Parse("1518-11-05 00:55"), "wakes up"), 99),
-            };
-
-            var (guard, minute) = scrubber.MostAsleepGuardOnSameMinute(entries);
+            var (guard, minute) = scrubber.MostAsleepGuardOnSameMinute();
 
             Assert.Equal(99, guard);
             Assert.Equal(45, minute);
@@ -116,7 +122,7 @@ namespace AdventCalendar.Tests
         [Theory, AutoData]
         public void MostAsleepGuard(Mock<IInputReader> inputReaderMock)
         {
-            inputReaderMock.Setup(x => x.ReadLines(It.IsAny<string>())).Returns(new List<string>
+            inputReaderMock.Setup(x => x.ReadLines()).Returns(new List<string>
             {
                 "[1518-11-01 00:00] Guard #10 begins shift",
                 "[1518-11-01 00:05] falls asleep",
@@ -147,7 +153,7 @@ namespace AdventCalendar.Tests
         [Theory, AutoData]
         public void GuardMostFrequentlyAsleepOnSameMinute(Mock<IInputReader> inputReaderMock)
         {
-            inputReaderMock.Setup(x => x.ReadLines(It.IsAny<string>())).Returns(new List<string>
+            inputReaderMock.Setup(x => x.ReadLines()).Returns(new List<string>
             {
                 "[1518-11-01 00:00] Guard #10 begins shift",
                 "[1518-11-01 00:05] falls asleep",
@@ -173,6 +179,60 @@ namespace AdventCalendar.Tests
             var result = puzzle.Solve();
 
             Assert.Equal("4455", result);
+        }
+
+        [Theory, AutoData]
+        public void GuardMinuteFactory_GetsCorrectAmountOfMinutes(Mock<IInputReader> inputReaderMock)
+        {
+            inputReaderMock.Setup(x => x.ReadLines()).Returns(new List<string>
+            {
+                "[1518-11-01 00:00] Guard #10 begins shift",
+                "[1518-11-01 00:05] falls asleep",
+                "[1518-11-01 00:07] wakes up",
+            });
+
+            var guardMinuteFactory = new GuardMinuteFactory(inputReaderMock.Object);
+
+            var result = guardMinuteFactory.GenerateGuardMinutes();
+
+            Assert.Equal(2, result.Count());
+        }
+
+        [Theory, AutoData]
+        public void GuardMinuteFactory_GetsCorrectGuardId(Mock<IInputReader> inputReaderMock)
+        {
+            inputReaderMock.Setup(x => x.ReadLines()).Returns(new List<string>
+            {
+                "[1518-11-01 00:00] Guard #10 begins shift",
+                "[1518-11-01 00:05] falls asleep",
+                "[1518-11-01 00:07] wakes up",
+            });
+
+            var guardMinuteFactory = new GuardMinuteFactory(inputReaderMock.Object);
+
+            var result = guardMinuteFactory.GenerateGuardMinutes();
+
+            Assert.Equal(10, result.First().GuardId);
+        }
+
+        [Theory, AutoData]
+        public void GuardMinuteFactory_GetsCorrectGuardIdForSecondGuard(Mock<IInputReader> inputReaderMock)
+        {
+            inputReaderMock.Setup(x => x.ReadLines()).Returns(new List<string>
+            {
+                "[1518-11-01 00:00] Guard #10 begins shift",
+                "[1518-11-01 00:05] falls asleep",
+                "[1518-11-01 00:06] wakes up",
+                "[1518-11-01 23:58] Guard #99 begins shift",
+                "[1518-11-02 00:40] falls asleep",
+                "[1518-11-02 00:41] wakes up",
+            });
+
+            var guardMinuteFactory = new GuardMinuteFactory(inputReaderMock.Object);
+
+            var result = guardMinuteFactory.GenerateGuardMinutes();
+
+            Assert.Equal(99, result.Last().GuardId);
         }
     }
 }
