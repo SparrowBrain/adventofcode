@@ -1,16 +1,16 @@
-﻿using System.Collections.Generic;
-using AdventCalendar.Day01;
+﻿using AdventCalendar.Day01;
+using System.Collections.Generic;
 
 namespace AdventCalendar
 {
     internal abstract class Puzzle : IPuzzle
     {
-        protected readonly IInputReader _inputReader;
+        protected readonly IInputReader InputReader;
         protected IEnumerable<string> Lines { get; }
 
-        public Puzzle(IInputReader inputReader)
+        protected Puzzle(IInputReader inputReader)
         {
-            _inputReader = inputReader;
+            InputReader = inputReader;
             Lines = inputReader.ReadLines();
         }
 
