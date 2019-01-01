@@ -15,7 +15,7 @@ namespace AdventCalendar.Day02
         {
             var twoTimes = 0;
             var threeTimes = 0;
-            foreach (var line in Lines)
+            foreach (var line in InputReader.ReadLines())
             {
                 var (two, three) = _analyzer.Analyze(line);
                 if (two)

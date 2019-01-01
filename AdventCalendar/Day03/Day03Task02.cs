@@ -4,7 +4,7 @@
     {
         public override string Solve()
         {
-            var claims = new Parser().Parse(Lines);
+            var claims = new Parser().Parse(InputReader.ReadLines());
             var fabricChecker = new FabricChecker();
             return fabricChecker.GetNonOverlappingId(claims).ToString();
         }

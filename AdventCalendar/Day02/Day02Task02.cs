@@ -7,7 +7,7 @@ namespace AdventCalendar.Day02
     {
         public override string Solve()
         {
-            return new MatchFinder().Find(Lines);
+            return new MatchFinder().Find(InputReader.ReadLines());
         }
 
         public Day02Task02(IInputReader inputReader) : base(inputReader)

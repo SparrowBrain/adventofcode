@@ -30,7 +30,7 @@ namespace AdventCalendar.Day04
         {
             var minutes = _guardMinuteFactory.GenerateGuardMinutes();
 
-            var minuteGroups = (minutes.GroupBy(x => x));
+            var minuteGroups = minutes.GroupBy(x => x);
             minuteGroups = minuteGroups.OrderByDescending(x => x.Count());
 
             var mostFrequentGuardMinute = minuteGroups.First();

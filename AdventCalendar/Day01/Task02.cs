@@ -10,7 +10,7 @@ namespace AdventCalendar.Day01
             var reachedFrequencies = new HashSet<int>();
             while (true)
             {
-                foreach (var line in Lines)
+                foreach (var line in InputReader.ReadLines())
                 {
                     frequency += FrequencyParser.ParseChange(line);
                     if (reachedFrequencies.Contains(frequency))
