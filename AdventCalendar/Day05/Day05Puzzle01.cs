@@ -11,8 +11,9 @@ namespace AdventCalendar.Day05
         public override string Solve()
         {
             var polymer = InputReader.ReadLines().First();
+            var units = Unit.ConvertPolymer(polymer);
             var reactor = new PolymerReactor();
-            return reactor.ReactPolymerUnits(polymer).Length.ToString();
+            return reactor.ReactPolymerUnits(units).Count().ToString();
         }
     }
 }

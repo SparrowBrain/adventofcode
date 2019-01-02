@@ -11,32 +11,21 @@ namespace AdventCalendar.Tests
 {
     public class Day05Tests
     {
-        [Theory, AutoData]
-        public void PolymerReactor_SameTypeDifferentPolarity_Reacts(Mock<IInputReader> inputReaderMock)
+        [Fact]
+        public void PolymerReactor_SameTypeDifferentPolarity_Reacts()
         {
-            var polymer = "aA";
+            var polymer = Unit.ConvertPolymer("aA");
             var reactor = new PolymerReactor();
 
             var result = reactor.ReactPolymerUnits(polymer);
 
-            Assert.Equal("", result);
+            Assert.Empty(result);
         }
 
-        [Theory, AutoData]
-        public void PolymerReactor_NoAdjecentUnitsOfSameType_NothingHappens(Mock<IInputReader> inputReaderMock)
+        [Fact]
+        public void PolymerReactor_NoAdjecentUnitsOfSameType_NothingHappens()
         {
-            var polymer = "abAB";
-            var reactor = new PolymerReactor();
-
-            var result = reactor.ReactPolymerUnits(polymer);
-
-            Assert.Equal(polymer, result);
-        }
-
-        [Theory, AutoData]
-        public void PolymerReactor_AdjecentUnitsOfSameTypeHaveSamePolarity_NothingHappens(Mock<IInputReader> inputReaderMock)
-        {
-            var polymer = "aabAAB";
+            var polymer = Unit.ConvertPolymer("abAB");
             var reactor = new PolymerReactor();
 
             var result = reactor.ReactPolymerUnits(polymer);
@@ -44,17 +33,52 @@ namespace AdventCalendar.Tests
             Assert.Equal(polymer, result);
         }
 
-        [Theory, AutoData]
-        public void PolymerReactor_AfterFirstReactionTwoOtherUnitsCanReact_BothReactionsHappen(Mock<IInputReader> inputReaderMock)
+        [Fact]
+        public void PolymerReactor_AdjecentUnitsOfSameTypeHaveSamePolarity_NothingHappens()
         {
-            var polymer = "abBA";
+            var polymer = Unit.ConvertPolymer("aabAAB");
             var reactor = new PolymerReactor();
 
             var result = reactor.ReactPolymerUnits(polymer);
 
-            Assert.Equal("", result);
+            Assert.Equal(polymer, result);
         }
-        
+
+        [Fact]
+        public void PolymerReactor_AfterFirstReactionTwoOtherUnitsCanReact_BothReactionsHappen()
+        {
+            var polymer = Unit.ConvertPolymer("abBA");
+            var reactor = new PolymerReactor();
+
+            var result = reactor.ReactPolymerUnits(polymer);
+
+            Assert.Empty(result);
+        }
+
+        [Theory]
+        [InlineData('a', 'a')]
+        [InlineData('B', 'b')]
+        public void UnitFactory_ConvertPolymer_ConvertsToCorrectType(char initialUnit, char expectedUnitType)
+        {
+            var polymer = initialUnit.ToString();
+
+            var units = Unit.ConvertPolymer(polymer);
+
+            Assert.Equal(expectedUnitType, units.First().Type);
+        }
+
+        [Theory]
+        [InlineData('a', Polarity.Down)]
+        [InlineData('B', Polarity.Up)]
+        public void UnitFactory_ConvertPolymer_ConvertsToCorrectPolarity(char initialUnit, Polarity unitPolarity)
+        {
+            var polymer = initialUnit.ToString();
+
+            var units = Unit.ConvertPolymer(polymer);
+
+            Assert.Equal(unitPolarity, units.First().Polarity);
+        }
+
         [Theory, AutoData]
         public void GetsTheCorrectPolymerLengthAfterAllReactions(Mock<IInputReader> inputReaderMock)
         {
@@ -70,7 +94,7 @@ namespace AdventCalendar.Tests
             Assert.Equal("10", result);
         }
 
-        [Theory(Skip ="later"), AutoData]
+        [Theory, AutoData]
         public void ShortestPolymerLengthAfterRemovingTheProblematicUnit(Mock<IInputReader> inputReaderMock)
         {
             inputReaderMock.Setup(x => x.ReadLines()).Returns(new List<string>
