@@ -15,9 +15,9 @@ namespace AdventCalendar.Tests
         public void PolymerReactor_SameTypeDifferentPolarity_Reacts(Mock<IInputReader> inputReaderMock)
         {
             var polymer = "aA";
-            var reactor = new PolymerReactor(polymer);
+            var reactor = new PolymerReactor();
 
-            var result = reactor.ReactPolymerUnits();
+            var result = reactor.ReactPolymerUnits(polymer);
 
             Assert.Equal("", result);
         }
@@ -26,9 +26,9 @@ namespace AdventCalendar.Tests
         public void PolymerReactor_NoAdjecentUnitsOfSameType_NothingHappens(Mock<IInputReader> inputReaderMock)
         {
             var polymer = "abAB";
-            var reactor = new PolymerReactor(polymer);
+            var reactor = new PolymerReactor();
 
-            var result = reactor.ReactPolymerUnits();
+            var result = reactor.ReactPolymerUnits(polymer);
 
             Assert.Equal(polymer, result);
         }
@@ -37,9 +37,9 @@ namespace AdventCalendar.Tests
         public void PolymerReactor_AdjecentUnitsOfSameTypeHaveSamePolarity_NothingHappens(Mock<IInputReader> inputReaderMock)
         {
             var polymer = "aabAAB";
-            var reactor = new PolymerReactor(polymer);
+            var reactor = new PolymerReactor();
 
-            var result = reactor.ReactPolymerUnits();
+            var result = reactor.ReactPolymerUnits(polymer);
 
             Assert.Equal(polymer, result);
         }
@@ -48,24 +48,13 @@ namespace AdventCalendar.Tests
         public void PolymerReactor_AfterFirstReactionTwoOtherUnitsCanReact_BothReactionsHappen(Mock<IInputReader> inputReaderMock)
         {
             var polymer = "abBA";
-            var reactor = new PolymerReactor(polymer);
+            var reactor = new PolymerReactor();
 
-            var result = reactor.ReactPolymerUnits();
+            var result = reactor.ReactPolymerUnits(polymer);
 
             Assert.Equal("", result);
         }
-
-        [Theory, AutoData]
-        public void PolymerReactor_ReactsAfterRemovingReacionStopper(Mock<IInputReader> inputReaderMock)
-        {
-            var polymer = "dabAcCaCBAcCcaDA";
-            var reactor = new PolymerReactor(polymer);
-
-            var result = reactor.ReactAfterRemovingReactionStopper();
-
-            Assert.Equal("dabAaBAaDA", result);
-        }
-
+        
         [Theory, AutoData]
         public void GetsTheCorrectPolymerLengthAfterAllReactions(Mock<IInputReader> inputReaderMock)
         {

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -7,21 +6,14 @@ namespace AdventCalendar.Day05
 {
     internal class PolymerReactor
     {
-        private readonly string _polymer;
-
-        public PolymerReactor(string polymer)
+        public string ReactPolymerUnits(string polymer)
         {
-            _polymer = polymer;
-        }
-
-        public string ReactPolymerUnits()
-        {
-            var newPolymer = new StringBuilder(_polymer);
+            var newPolymer = new StringBuilder(polymer);
             bool reactionHappened;
 
             do
             {
-                var polymer = newPolymer.ToString();
+                polymer = newPolymer.ToString();
                 newPolymer = new StringBuilder();
                 reactionHappened = false;
                 for (var i = 0; i < polymer.Length - 1; i++)
@@ -47,18 +39,6 @@ namespace AdventCalendar.Day05
             } while (newPolymer.Length > 0 && reactionHappened);
 
             return newPolymer.ToString();
-        }
-
-        public string ReactAfterRemovingReactionStopper()
-        {
-            var polymerLengthAfterRemovingUnit = new Dictionary<char, int>();
-            foreach (var unit in _polymer.ToLowerInvariant().Distinct())
-            {
-                
-            }
-
-            return string.Empty;
-
         }
 
         private bool Reacts(string unit1, string unit2)
