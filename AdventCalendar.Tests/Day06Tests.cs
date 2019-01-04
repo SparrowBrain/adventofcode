@@ -76,8 +76,11 @@ namespace AdventCalendar.Tests
             Assert.Equal(0, fields[expectedSource.X][expectedSource.Y].Distance);
         }
 
-        [Fact(Skip = "later")]
-        public void FieldGenerator_SetsCoordinateClosestToOneSource()
+        [Theory]
+        [InlineData("1, 1", 1, 0, 1)]
+        [InlineData("1, 1", 0, 0, 2)]
+        [InlineData("8, 3", 6, 1, 4)]
+        public void FieldGenerator_SetsCoordinateClosestToOneSource(string closestSource, int x, int y, int distance)
         {
             var sources = new List<string>
             {
@@ -92,8 +95,9 @@ namespace AdventCalendar.Tests
 
             var fields = generator.CreateFields();
 
-            Assert.Equal(Source.Parse("1, 1"), fields[0][0].Source);
-            Assert.Equal(1, fields[0][0].Distance);
+            var expectedSource = Source.Parse(closestSource);
+            Assert.Equal(expectedSource, fields[x][y].Source);
+            Assert.Equal(distance, fields[x][y].Distance);
         }
     }
 }
