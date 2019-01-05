@@ -9,7 +9,7 @@ namespace AdventCalendar.Tests
 {
     public class Day06Tests
     {
-        [Theory(Skip = "Later"), AutoData]
+        [Theory, AutoData]
         public void Day06Puzzle01_LargestNonInfiniteArea(Mock<IInputReader> inputReaderMock)
         {
             inputReaderMock.Setup(x => x.ReadLines()).Returns(new List<string>
@@ -28,27 +28,7 @@ namespace AdventCalendar.Tests
 
             Assert.Equal("17", result);
         }
-
-        [Fact]
-        public void BoardGetsMaxValues()
-        {
-            var sources = new List<string>
-            {
-                "1, 1",
-                "1, 6",
-                "8, 3",
-                "3, 4",
-                "5, 5",
-                "8, 9",
-            }.Select(Source.Parse);
-            var boardFactory = new BoardFactory(sources);
-
-            (var maxX, var maxY) = boardFactory.GetMaxXY();
-
-            Assert.Equal(8, maxX);
-            Assert.Equal(9, maxY);
-        }
-
+        
         [Theory]
         [InlineData("1, 1")]
         [InlineData("1, 6")]
@@ -77,10 +57,10 @@ namespace AdventCalendar.Tests
         }
 
         [Theory]
-        [InlineData("1, 1", 1, 0, 1)]
-        [InlineData("1, 1", 0, 0, 2)]
-        [InlineData("8, 3", 6, 1, 4)]
-        public void FieldGenerator_SetsCoordinateClosestToOneSource(string closestSource, int x, int y, int distance)
+        [InlineData("1, 1", 1, 0)]
+        [InlineData("1, 1", 0, 0)]
+        [InlineData("8, 3", 6, 1)]
+        public void FieldGenerator_SetsCoordinateClosestToOneSource(string closestSource, int x, int y)
         {
             var sources = new List<string>
             {
@@ -97,7 +77,56 @@ namespace AdventCalendar.Tests
 
             var expectedSource = Source.Parse(closestSource);
             Assert.Equal(expectedSource, fields[x][y].Source);
-            Assert.Equal(distance, fields[x][y].Distance);
+        }
+
+        [Theory]
+        [InlineData(5, 0)]
+        [InlineData(5, 1)]
+        [InlineData(0, 4)]
+        [InlineData(1, 4)]
+        [InlineData(2, 5)]
+        public void FieldGenerator_SetsConflictForCoordinatesClosestToTwoOrMoreSources(int x, int y)
+        {
+            var sources = new List<string>
+            {
+                "1, 1",
+                "1, 6",
+                "8, 3",
+                "3, 4",
+                "5, 5",
+                "8, 9",
+            }.Select(Source.Parse);
+            var generator = new FieldGenerator(sources);
+
+            var fields = generator.CreateFields();
+
+            Assert.Equal(Vector.Conflict, fields[x][y]);
+        }
+
+        [Theory]
+        [InlineData("1, 1", true)]
+        [InlineData("1, 6", true)]
+        [InlineData("8, 3", true)]
+        [InlineData("3, 4", false)]
+        [InlineData("5, 5", false)]
+        [InlineData("8, 9", true)]
+        public void FieldGenerator_MarksSourcesWithFieldInfinity(string source, bool expectedInfinity)
+        {
+            var sources = new List<string>
+            {
+                "1, 1",
+                "1, 6",
+                "8, 3",
+                "3, 4",
+                "5, 5",
+                "8, 9",
+            }.Select(Source.Parse);
+            var generator = new FieldGenerator(sources);
+
+            var fields = generator.CreateFields();
+
+            var actualInfinity = fields.SelectMany(x => x.ToList()).First(x => Equals(x.Source, Source.Parse(source))).Source.Infinity;
+            Assert.Equal(expectedInfinity, actualInfinity);
         }
     }
 }
