@@ -25,7 +25,8 @@ namespace AdventCalendar
             //puzzle = new Day04Puzzle02(new FileReader("Day04\\input.txt"));
             //puzzle = new Day05Puzzle01(new FileReader("Day05\\input.txt"));
             //puzzle = new Day05Puzzle02(new FileReader("Day05\\input.txt"));
-            puzzle = new Day06Puzzle01(new FileReader("Day06\\input.txt"));
+            //puzzle = new Day06Puzzle01(new FileReader("Day06\\input.txt"));
+            puzzle = new Day06Puzzle02(new FileReader("Day06\\input.txt"), 10000);
 
             var result = puzzle.Solve();
 

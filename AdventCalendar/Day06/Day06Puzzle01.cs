@@ -12,9 +12,10 @@ namespace AdventCalendar.Day06
         public override string Solve()
         {
             var sources = InputReader.ReadLines().Select(Source.Parse).ToList();
-            var fieldGenerator = new FieldGenerator(sources);
+            var board = new BoardFactory(sources).CreateBoard();
+            var fieldGenerator = new FieldGenerator(board);
 
-            var fields = fieldGenerator.CreateFields();
+            var fields = fieldGenerator.CreateFields(sources);
 
             var nonInfiniteVectors = fields.SelectMany(x => x.ToList()).Where(x => !Equals(x, Vector.Conflict) && x.Source.Infinity == false);
 

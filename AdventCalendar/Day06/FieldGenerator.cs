@@ -4,34 +4,29 @@ namespace AdventCalendar.Day06
 {
     internal class FieldGenerator
     {
-        private readonly IEnumerable<Source> _sources;
+        private readonly Vector[][] _board;
 
-        public FieldGenerator(IEnumerable<Source> sources)
+        public FieldGenerator(Vector[][] board)
         {
-            _sources = sources;
+            _board = board;
         }
 
-        public Vector[][] CreateFields()
+        public Vector[][] CreateFields(IEnumerable<Source> sources)
         {
-            var boardFactory = new BoardFactory(_sources);
-            var board = boardFactory.CreateBoard();
+            var board = new Vector[_board.Length][];
+            for (var x = 0; x < _board.Length; x++)
+            {
+                board[x] = new Vector[_board[0].Length];
+            }
 
             var distance = 0;
             var modificationHappened = false;
             do
             {
                 modificationHappened = false;
-                foreach (var source in _sources)
+                foreach (var source in sources)
                 {
-                    for (var deltaX = 0; deltaX <= distance; deltaX++)
-                    {
-                        var deltaY = distance - deltaX;
-
-                        modificationHappened |= SetVector(board, source, distance, source.X + deltaX, source.Y + deltaY);
-                        modificationHappened |= SetVector(board, source, distance, source.X + deltaX, source.Y - deltaY);
-                        modificationHappened |= SetVector(board, source, distance, source.X - deltaX, source.Y + deltaY);
-                        modificationHappened |= SetVector(board, source, distance, source.X - deltaX, source.Y - deltaY);
-                    }
+                    modificationHappened = ExpandField(distance, modificationHappened, board, source);
                 }
 
                 distance++;
@@ -42,15 +37,30 @@ namespace AdventCalendar.Day06
             return board;
         }
 
+        private static bool ExpandField(int distance, bool modificationHappened, Vector[][] board, Source source)
+        {
+            for (var deltaX = 0; deltaX <= distance; deltaX++)
+            {
+                var deltaY = distance - deltaX;
+
+                modificationHappened |= SetVector(board, source, distance, source.X + deltaX, source.Y + deltaY);
+                modificationHappened |= SetVector(board, source, distance, source.X + deltaX, source.Y - deltaY);
+                modificationHappened |= SetVector(board, source, distance, source.X - deltaX, source.Y + deltaY);
+                modificationHappened |= SetVector(board, source, distance, source.X - deltaX, source.Y - deltaY);
+            }
+
+            return modificationHappened;
+        }
+
         private static void SetInfinity(Vector[][] board)
         {
-            for (var x = 0; x < board.Length; x ++)
+            for (var x = 0; x < board.Length; x++)
             {
                 CheckBorder(board, x, 0);
                 CheckBorder(board, x, board[0].Length - 1);
             }
 
-            for (var y = 0; y < board[0].Length; y ++)
+            for (var y = 0; y < board[0].Length; y++)
             {
                 CheckBorder(board, 0, y);
                 CheckBorder(board, board.Length - 1, y);
