@@ -1,10 +1,7 @@
 ﻿using AdventCalendar.Day01;
-using AdventCalendar.Day04;
+using AdventCalendar.Day07;
 using System;
 using System.Runtime.CompilerServices;
-using AdventCalendar.Day03;
-using AdventCalendar.Day05;
-using AdventCalendar.Day06;
 
 [assembly: InternalsVisibleTo("AdventCalendar.Tests")]
 
@@ -26,7 +23,8 @@ namespace AdventCalendar
             //puzzle = new Day05Puzzle01(new FileReader("Day05\\input.txt"));
             //puzzle = new Day05Puzzle02(new FileReader("Day05\\input.txt"));
             //puzzle = new Day06Puzzle01(new FileReader("Day06\\input.txt"));
-            puzzle = new Day06Puzzle02(new FileReader("Day06\\input.txt"), 10000);
+            //puzzle = new Day06Puzzle02(new FileReader("Day06\\input.txt"), 10000);
+            puzzle = new Day07Puzzle01(new FileReader("Day07\\input.txt"));
 
             var result = puzzle.Solve();
 
