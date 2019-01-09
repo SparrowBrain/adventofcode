@@ -166,10 +166,10 @@ namespace AdventCalendar.Tests
         }
 
         [Theory]
-        [InlineAutoData("Step A must be finished before step Z can begin.", 1+26)]
-        [InlineAutoData("Step B must be finished before step A can begin.", 2+1)]
-        [InlineAutoData("Step C must be finished before step A can begin.", 3+1)]
-        public void InstructionHelper_TimeToAssemble_OneWorkerSolvesOneStep(string line, int duration, StepSettings stepSettings, WorkerSettings workerSettings)
+        [InlineAutoData("Step A must be finished before step Z can begin.", 1 + 26)]
+        [InlineAutoData("Step B must be finished before step A can begin.", 2 + 1)]
+        [InlineAutoData("Step C must be finished before step A can begin.", 3 + 1)]
+        public void InstructionHelper_TimeToAssemble_OneWorkerSolvesTwoSteps(string line, int duration, StepSettings stepSettings, WorkerSettings workerSettings)
         {
             stepSettings.DurationOffset = 0;
             workerSettings.WorkerCount = 1;
@@ -183,6 +183,45 @@ namespace AdventCalendar.Tests
             var result = instructionHelper.TimeToAssemble(steps, workerSettings.WorkerCount);
 
             Assert.Equal(duration, result);
+        }
+
+        [Theory]
+        [InlineAutoData("Step A must be finished before step Z can begin.", 1 + 26)]
+        [InlineAutoData("Step B must be finished before step A can begin.", 2 + 1)]
+        [InlineAutoData("Step C must be finished before step A can begin.", 3 + 1)]
+        public void InstructionHelper_TimeToAssemble_TwoWorkersSolvesTwoBlockedSteps(string line, int duration, StepSettings stepSettings, WorkerSettings workerSettings)
+        {
+            stepSettings.DurationOffset = 0;
+            workerSettings.WorkerCount = 2;
+            var lines = new List<string> {
+                line
+            };
+
+            var steps = new StepFactory(stepSettings).Create(lines);
+            var instructionHelper = new InstructionHelper();
+
+            var result = instructionHelper.TimeToAssemble(steps, workerSettings.WorkerCount);
+
+            Assert.Equal(duration, result);
+        }
+
+        [Theory]
+        [AutoData]
+        public void InstructionHelper_TimeToAssemble_TwoWorkersSolvesThreeSteps(StepSettings stepSettings, WorkerSettings workerSettings)
+        {
+            stepSettings.DurationOffset = 0;
+            workerSettings.WorkerCount = 2;
+            var lines = new List<string> {
+                "Step C must be finished before step B can begin.",
+                "Step C must be finished before step F can begin.",
+            };
+
+            var steps = new StepFactory(stepSettings).Create(lines);
+            var instructionHelper = new InstructionHelper();
+
+            var result = instructionHelper.TimeToAssemble(steps, workerSettings.WorkerCount);
+
+            Assert.Equal(9, result);
         }
     }
 }

@@ -25,6 +25,11 @@ namespace AdventCalendar.Day07
             next.PrerequisiteSteps.Add(this);
         }
 
+        public void StartStep()
+        {
+            StepState = StepState.Started;
+        }
+
         public void PerformStep()
         {
             foreach (var step in NextSteps)
@@ -32,10 +37,10 @@ namespace AdventCalendar.Day07
                 step.PrerequisiteSteps.Remove(this);
             }
 
-            Done = true;
+            StepState = StepState.Done;
         }
 
-        public bool Done { get; private set; }
+        public StepState StepState { get; private set; }
 
         public int Duration { get; private set; }
 

@@ -10,7 +10,7 @@ namespace AdventCalendar.Day07
         {
             var stepOrder = new StringBuilder();
 
-            while (steps.Any(x => !x.Done))
+            while (steps.Any(x => x.StepState != StepState.Done))
             {
                 var nextStep = NextAvailableStep(steps);
                 nextStep.PerformStep();
@@ -23,47 +23,61 @@ namespace AdventCalendar.Day07
 
         private static Step NextAvailableStep(HashSet<Step> steps)
         {
-            return steps.Where(x => !x.Done && x.PrerequisiteSteps.Count == 0).OrderBy(x => x.Name).First();
+            return steps.Where(x => x.StepState == StepState.Idle && x.PrerequisiteSteps.Count == 0).OrderBy(x => x.Name).FirstOrDefault();
         }
 
         public int TimeToAssemble(HashSet<Step> steps, int workerCount)
         {
-            var stepsInProgress = new KeyValuePair<Step, Work>[workerCount];
+            var stepsInProgress = new Worker[workerCount];
+            for (var i = 0; i < workerCount; i++)
+            {
+                stepsInProgress[i] = new Worker();
+            }
 
             var seconds = 0;
-            while (steps.Any(x => !x.Done))
+            while (steps.Any(x => x.StepState != StepState.Done))
             {
                 seconds++;
 
-                var nextStep = NextAvailableStep(steps);
-                if (nextStep != null && stepsInProgress.Any(x => x.Key == null))
+                var availableWorkerCount = stepsInProgress.Count(x => x.Step == null);
+                for (var i = 0; i < availableWorkerCount; i++)
                 {
-                    for (var i = 0; i < stepsInProgress.Length; i++)
+                    var nextStep = NextAvailableStep(steps);
+                    if (nextStep == null)
                     {
-                        if (stepsInProgress[i].Key == null)
-                        {
-                            stepsInProgress[i] = new KeyValuePair<Step, Work>(nextStep, new Work() { TimeLeft = nextStep.Duration });
-                            break;
-                        }
+                        break;
                     }
+
+                    var availableWorker = stepsInProgress.First(x => x.Step == null);
+                    availableWorker.Step = nextStep;
+                    availableWorker.Work = new Work() { TimeLeft = nextStep.Duration };
+                    nextStep.StartStep();
                 }
 
                 for (var i = 0; i < stepsInProgress.Length; i++)
                 {
-                    if (stepsInProgress[i].Key != null)
+                    if (stepsInProgress[i].Step == null)
                     {
-                        stepsInProgress[i].Value.TimeLeft--;
+                        continue;
+                    }
 
-                        if (stepsInProgress[i].Value.TimeLeft == 0)
-                        {
-                            stepsInProgress[i].Key.PerformStep();
-                            stepsInProgress[i] = new KeyValuePair<Step, Work>();
-                        }
+                    stepsInProgress[i].Work.TimeLeft--;
+
+                    if (stepsInProgress[i].Work.TimeLeft == 0)
+                    {
+                        stepsInProgress[i].Step.PerformStep();
+                        stepsInProgress[i] = new Worker();
                     }
                 }
             }
 
             return seconds;
         }
+    }
+
+    internal class Worker
+    {
+        public Step Step { get; set; }
+        public Work Work { get; set; }
     }
 }
